@@ -1,11 +1,9 @@
 "use client";
 
-import { useTheme } from '../components/ThemeProvider';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 
 export default function Home() {
-  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   return (
@@ -18,20 +16,9 @@ export default function Home() {
         <div className="fixed inset-0">
           <div 
             className="absolute inset-0 bg-[url('/gavetools.png')] bg-cover bg-center"
-            style={{ opacity: theme === 'light' ? 0.3 : 0.4 }}
+            style={{ opacity: 0.4 }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
-        </div>
-        
-        {/* Theme Toggle */}
-        <div className="absolute top-4 right-4 z-50">
-          <button
-            onClick={toggleTheme}
-            className="p-3 rounded-full glass-effect text-white/70 hover:text-white transition-all duration-200 text-xl"
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' ? '🌙' : '☀️'}
-          </button>
         </div>
 
         {/* Main Content */}

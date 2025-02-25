@@ -159,17 +159,19 @@ const ShapeSearch: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212]">
-      <div className="w-full max-w-4xl mx-auto p-4 relative z-10">
+    <div className="min-h-screen bg-[#121212] engineering-grid">
+      <div className="w-full max-w-4xl mx-auto p-4">
         <button
           onClick={() => router.push('/')}
-          className="mb-8 px-6 py-3 glass-effect text-white/70 hover:text-white font-mono tracking-wider transition-all duration-200"
+          className="mb-8 px-6 py-3 engineering-paper text-white/70 hover:text-white font-mono tracking-wider transition-all duration-200"
         >
           ← BACK
         </button>
         
-        <div className="glass-effect p-8 mb-8">
-          <h2 className="text-3xl font-bold text-white/90 mb-8 font-mono tracking-widest">W BEAMS DATABASE</h2>
+        <div className="engineering-paper p-8 mb-8">
+          <h2 className="text-3xl font-bold text-white/90 mb-8 font-mono tracking-widest border-b border-white/10 pb-4">
+            W BEAMS DATABASE
+          </h2>
           <div className="relative">
             <input
               type="text"
@@ -195,8 +197,8 @@ const ShapeSearch: React.FC = () => {
         </div>
 
         {selectedShape && (
-          <div className="glass-effect p-8 mb-8">
-            <h2 className="text-3xl font-bold text-white/90 mb-8 font-mono tracking-widest">
+          <div className="engineering-paper p-8 mb-8">
+            <h2 className="text-3xl font-bold text-white/90 mb-8 font-mono tracking-widest border-b border-white/10 pb-4">
               Lateral-Torsional Buckling Calculator
             </h2>
 
@@ -278,7 +280,7 @@ const ShapeSearch: React.FC = () => {
         )}
 
         {selectedShape && (
-          <div className="glass-effect p-8">
+          <div className="engineering-paper p-8">
             <h2 className="text-3xl font-bold text-white/90 mb-8 font-mono tracking-widest">
               {selectedShape.Shape}
             </h2>
