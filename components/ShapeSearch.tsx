@@ -67,6 +67,7 @@ const ShapeSearch: React.FC = () => {
   const [calculatedLr, setCalculatedLr] = useState<number | null>(null);
   const [calculationDetails, setCalculationDetails] = useState<CalculationDetails | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showEquation, setShowEquation] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -252,23 +253,103 @@ const ShapeSearch: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="w-full mt-4 p-3 bg-white/10 text-white/70 hover:text-white font-mono tracking-wider"
-                >
-                  {showDetails ? 'HIDE DETAILS' : 'SHOW DETAILS'}
-                </button>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <button
+                    onClick={() => setShowEquation(!showEquation)}
+                    className="p-3 bg-white/10 text-white/70 hover:text-white font-mono tracking-wider"
+                  >
+                    {showEquation ? 'HIDE EQUATION' : 'VIEW EQUATION'}
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowDetails(!showDetails)}
+                    className="p-3 bg-white/10 text-white/70 hover:text-white font-mono tracking-wider"
+                  >
+                    {showDetails ? 'HIDE DETAILS' : 'VIEW DETAILS'}
+                  </button>
+                </div>
+
+                {showEquation && (
+                  <div className="mt-4 p-6 bg-black/30 border border-white/10">
+                    <h4 className="mb-4 text-white/90 font-bold font-mono">AISC Equation for Lr:</h4>
+                    
+                    {/* Equation visualization */}
+                    <div className="overflow-x-auto pb-2">
+                      <div className="min-w-max">
+                        <div className="flex flex-col items-center text-white/90 font-mono">
+                          <div className="mb-6 text-center">
+                            <div className="text-lg mb-2">Lr = 1.95 × rts × (E / (0.7 × Fy)) × √(J / (Sx × ho)) × √(1 + √(1 + 6.76 × ((0.7 × Fy × Sx × ho) / (E × J))²))</div>
+                            <div className="h-px w-full bg-white/20 my-2"></div>
+                            <div className="grid grid-cols-5 gap-2 text-sm text-white/70">
+                              <div>Term 1</div>
+                              <div>Term 2</div>
+                              <div>Term 3</div>
+                              <div>Term 4</div>
+                              <div>Term 5</div>
+                            </div>
+                          </div>
+                          
+                          {/* Step by step calculation */}
+                          <div className="grid grid-cols-1 gap-4 w-full">
+                            <div className="grid grid-cols-5 gap-2 text-sm">
+                              <div className="p-2 border border-white/10 bg-white/5">
+                                <div className="mb-1 text-white/50">1.95 × rts</div>
+                                <div>= 1.95 × {calculationDetails.rts.toFixed(3)}</div>
+                                <div>= {calculationDetails.term1.toFixed(3)}</div>
+                              </div>
+                              
+                              <div className="p-2 border border-white/10 bg-white/5">
+                                <div className="mb-1 text-white/50">E / (0.7 × Fy)</div>
+                                <div>= {calculationDetails.E} / (0.7 × {calculationDetails.Fy})</div>
+                                <div>= {calculationDetails.term2.toFixed(2)}</div>
+                              </div>
+                              
+                              <div className="p-2 border border-white/10 bg-white/5">
+                                <div className="mb-1 text-white/50">√(J / (Sx × ho))</div>
+                                <div>= √({calculationDetails.J.toFixed(2)} / ({calculationDetails.Sx.toFixed(2)} × {calculationDetails.ho.toFixed(2)}))</div>
+                                <div>= {calculationDetails.term3.toFixed(4)}</div>
+                              </div>
+                              
+                              <div className="p-2 border border-white/10 bg-white/5">
+                                <div className="mb-1 text-white/50">6.76 × ((0.7 × Fy × Sx × ho) / (E × J))²</div>
+                                <div>= 6.76 × ((0.7 × {calculationDetails.Fy} × {calculationDetails.Sx.toFixed(2)} × {calculationDetails.ho.toFixed(2)}) / ({calculationDetails.E} × {calculationDetails.J.toFixed(2)}))²</div>
+                                <div>= {calculationDetails.term4.toFixed(4)}</div>
+                              </div>
+                              
+                              <div className="p-2 border border-white/10 bg-white/5">
+                                <div className="mb-1 text-white/50">√(1 + √(1 + term4))</div>
+                                <div>= √(1 + √(1 + {calculationDetails.term4.toFixed(4)}))</div>
+                                <div>= {calculationDetails.term5.toFixed(4)}</div>
+                              </div>
+                            </div>
+                            
+                            <div className="p-3 border border-white/10 bg-white/5 text-center">
+                              <div className="text-white/50 mb-1">Final Calculation</div>
+                              <div>Lr = {calculationDetails.term1.toFixed(3)} × {calculationDetails.term2.toFixed(2)} × {calculationDetails.term3.toFixed(4)} × {calculationDetails.term5.toFixed(4)}</div>
+                              <div>= {calculatedLr.toFixed(2)} inches</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {showDetails && (
                   <div className="mt-4 p-6 bg-black/30 border border-white/10 font-mono text-white/80 text-sm">
-                    {/* Calculation details */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Existing calculation details */}
+                    <h4 className="mb-4 text-white/90 font-bold">Calculated Section Properties:</h4>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-3 mb-6">
                       <div>Ix = {calculationDetails.Ix.toFixed(2)} in⁴</div>
                       <div>Iy = {calculationDetails.Iy.toFixed(2)} in⁴</div>
                       <div>Sx = {calculationDetails.Sx.toFixed(2)} in³</div>
                       <div>J = {calculationDetails.J.toFixed(2)} in⁴</div>
                       <div>ho = {calculationDetails.ho.toFixed(2)} in</div>
                       <div>rts = {calculationDetails.rts.toFixed(3)} in</div>
+                    </div>
+                    
+                    <h4 className="mb-4 text-white/90 font-bold">Input Values:</h4>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-3 mb-6">
                       <div>E = {calculationDetails.E} ksi</div>
                       <div>Fy = {calculationDetails.Fy} ksi</div>
                     </div>
