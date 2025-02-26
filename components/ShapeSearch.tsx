@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import { useRouter } from 'next/navigation';
+import { useTheme } from './ThemeProvider';
 
 // Define interfaces for type safety
 interface ShapeData {
@@ -51,6 +52,7 @@ declare global {
 
 const ShapeSearch: React.FC = () => {
   const router = useRouter();
+  const { theme } = useTheme();
   const [data, setData] = useState<ShapeData[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedShape, setSelectedShape] = useState<ShapeData | null>(null);
@@ -160,17 +162,17 @@ const ShapeSearch: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white engineering-grid">
+    <div className="min-h-screen engineering-grid">
       <div className="w-full max-w-4xl mx-auto p-4">
         <button
           onClick={() => router.push('/')}
-          className="mb-8 px-6 py-3 minimal-button text-gray-700 hover:text-black tracking-wider transition-all duration-200"
+          className="mb-8 px-6 py-3 minimal-button tracking-wider transition-all duration-200"
         >
           ← BACK
         </button>
         
         <div className="minimal-card p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 tracking-widest border-b border-gray-200 pb-4">
+          <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-8 tracking-widest border-b border-[var(--card-border)] pb-4">
             W MEMBER TOOL
           </h2>
           <div className="relative">
@@ -179,7 +181,7 @@ const ShapeSearch: React.FC = () => {
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search for a shape..."
-              className="w-full p-4 bg-gray-50 border border-gray-200 text-gray-800 focus:border-gray-400 focus:outline-none transition-all duration-200 tracking-wider"
+              className="w-full p-4 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] focus:border-[var(--text-secondary)] focus:outline-none transition-all duration-200 tracking-wider"
             />
             {suggestions.length > 0 && (
               <div className="absolute z-10 w-full bg-white border border-gray-200 shadow-lg">
