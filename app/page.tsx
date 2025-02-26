@@ -30,7 +30,7 @@ export default function Home() {
             {/* Links */}
             <div className="flex justify-center space-x-12 mb-24">
               <a 
-                href="#" 
+                href="/resume" 
                 className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] tracking-wider text-lg border-b border-[var(--text-tertiary)] hover:border-[var(--text-primary)] pb-1 transition-all duration-200"
               >
                 RESUME
