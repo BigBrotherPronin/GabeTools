@@ -189,11 +189,11 @@ const ShapeSearch: React.FC = () => {
               className="w-full p-4 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] focus:border-[var(--text-secondary)] focus:outline-none transition-all duration-200 tracking-wider"
             />
             {suggestions.length > 0 && (
-              <div className="absolute z-10 w-full bg-white border border-gray-200 shadow-lg">
+              <div className="absolute z-10 w-full bg-[var(--card-bg)] border border-[var(--card-border)] shadow-lg">
                 {suggestions.map((shape, index) => (
                   <div
                     key={index}
-                    className="p-4 hover:bg-gray-50 cursor-pointer text-gray-700 hover:text-black tracking-wider border-b border-gray-100 last:border-b-0"
+                    className="p-4 hover:bg-[var(--button-hover)] cursor-pointer text-[var(--text-primary)] hover:text-[var(--text-primary)] tracking-wider border-b border-[var(--card-border)] last:border-b-0"
                     onClick={() => handleSelect(shape)}
                   >
                     {shape}
@@ -206,13 +206,13 @@ const ShapeSearch: React.FC = () => {
 
         {selectedShape && (
           <div className="minimal-card p-8 mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-8 tracking-widest border-b border-gray-200 pb-4">
+            <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-8 tracking-widest border-b border-[var(--card-border)] pb-4">
               Lateral-Torsional Buckling Calculator
             </h2>
 
             {/* Steel Grade Selection */}
             <div className="mb-8">
-              <h3 className="text-xl text-gray-800 mb-4 font-mono">Steel Grade</h3>
+              <h3 className="text-xl text-[var(--text-primary)] mb-4 font-mono">Steel Grade</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <select
                   value={selectedGrade.name}
@@ -220,7 +220,7 @@ const ShapeSearch: React.FC = () => {
                     const grade = steelGrades.find(g => g.name === e.target.value);
                     if (grade) setSelectedGrade(grade);
                   }}
-                  className="p-4 bg-gray-50 border border-gray-200 text-gray-800 font-mono focus:border-gray-400 focus:outline-none"
+                  className="p-4 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] font-mono focus:border-[var(--text-secondary)] focus:outline-none"
                   disabled={!!customFy}
                 >
                   {steelGrades.map((grade) => (
@@ -235,7 +235,7 @@ const ShapeSearch: React.FC = () => {
                   value={customFy}
                   onChange={(e) => setCustomFy(e.target.value)}
                   placeholder="Custom Fy (ksi)"
-                  className="p-4 bg-gray-50 border border-gray-200 text-gray-800 font-mono focus:border-gray-400 focus:outline-none"
+                  className="p-4 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] font-mono focus:border-[var(--text-secondary)] focus:outline-none"
                 />
               </div>
             </div>
@@ -243,7 +243,7 @@ const ShapeSearch: React.FC = () => {
             {/* Calculate Button */}
             <button
               onClick={calculateLr}
-              className="w-full p-4 bg-gray-800 text-white hover:bg-black tracking-wider transition-all duration-200"
+              className="w-full p-4 bg-[var(--accent)] text-white hover:opacity-90 tracking-wider transition-all duration-200"
             >
               CALCULATE Lr
             </button>
@@ -277,17 +277,17 @@ const ShapeSearch: React.FC = () => {
                 </div>
 
                 {showEquation && (
-                  <div className="mt-4 p-6 bg-gray-50 border border-gray-200">
-                    <h4 className="mb-4 text-gray-800 font-bold font-mono">AISC Equation for Lr:</h4>
+                  <div className="mt-4 p-6 bg-[var(--input-bg)] border border-[var(--input-border)]">
+                    <h4 className="mb-4 text-[var(--text-primary)] font-bold font-mono">AISC Equation for Lr:</h4>
                     
                     {/* Equation visualization */}
                     <div className="overflow-x-auto pb-2">
                       <div className="min-w-max">
-                        <div className="flex flex-col items-center text-gray-800 font-mono">
+                        <div className="flex flex-col items-center text-[var(--text-primary)] font-mono">
                           <div className="mb-6 text-center">
                             <div className="text-lg mb-2">Lr = 1.95 × rts × (E / (0.7 × Fy)) × √(J / (Sx × ho)) × √(1 + √(1 + 6.76 × ((0.7 × Fy × Sx × ho) / (E × J))²))</div>
-                            <div className="h-px w-full bg-gray-200 my-2"></div>
-                            <div className="grid grid-cols-5 gap-2 text-sm text-gray-700">
+                            <div className="h-px w-full bg-[var(--card-border)] my-2"></div>
+                            <div className="grid grid-cols-5 gap-2 text-sm text-[var(--text-secondary)]">
                               <div>Term 1</div>
                               <div>Term 2</div>
                               <div>Term 3</div>
