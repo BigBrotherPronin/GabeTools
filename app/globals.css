@@ -2,16 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+.engineering-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.minimal-card {
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.minimal-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.minimal-button {
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.minimal-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+@layer base {
+  body {
+    font-family: 'Source Code Pro', monospace;
+    background: #f8f8f8;
+    color: #333;
+    letter-spacing: 0.05em;
+  }
+}
+
+:root {
+  --background: #f8f8f8;
+  --foreground: #333;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Import a technical monospace font */
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+
 .glass-effect {
   background: rgba(18, 18, 18, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.engineering-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
 .engineering-paper {
@@ -20,20 +66,24 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-@layer base {
-  body {
-    font-family: 'Space Mono', monospace;
-    background: #121212;
-    color: rgba(255, 255, 255, 0.9);
-  }
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+
+.gothic-font {
+  font-family: 'Pirata One', cursive;
 }
 
-:root {
-  --background: #121212;
-  --foreground: rgba(255, 255, 255, 0.9);
+/* Alternative gothic font */
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
+.gothic-alt-font {
+  font-family: 'UnifrakturMaguntia', cursive;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
+.serif-font {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.technical-font {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.05em;
 }
