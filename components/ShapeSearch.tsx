@@ -121,22 +121,27 @@ const ShapeSearch: React.FC = () => {
       alert("Missing required section dimensions");
       return null;
     }
-
+  
     const d = shape.d;
     const bf = shape.bf;
     const tf = shape.tf;
     const tw = shape.tw;
     const h = d - 2 * tf;
-
+  
     // Calculate section properties
     const Ix = shape.Ix || (bf * Math.pow(d, 3) / 12) - ((bf - tw) * Math.pow(h, 3) / 12);
     const Sx = shape.Sx || Ix / (d / 2);
     const Iy = shape.Iy || (2 * tf * Math.pow(bf, 3) / 12) + (h * Math.pow(tw, 3) / 12);
     const J = (1/3) * (bf * Math.pow(tf, 3) * 2 + h * Math.pow(tw, 3));
     const ho = d - tf;
-    const rts = Math.sqrt(Math.sqrt(Iy * J) / Sx);
-
-    return { Ix, Iy, Sx, J, ho, rts };
+    
+    // Calculate warping constant Cw (approximation for W shapes)
+    const Cw = (Iy * Math.pow(ho, 2)) / 4;
+    
+    // Correct rts calculation
+    const rts = Math.sqrt(Math.sqrt(Iy * Cw) / Sx);
+  
+    return { Ix, Iy, Sx, J, ho, rts, Cw };
   };
 
   const calculateLr = () => {
@@ -246,11 +251,11 @@ const ShapeSearch: React.FC = () => {
             {/* Results */}
             {calculatedLr !== null && calculationDetails && (
               <div className="mt-8">
-                <div className="p-6 bg-gray-50 border border-gray-200 text-center">
-                  <div className="text-2xl text-gray-800 font-mono tracking-wider">
-                    Lr = {calculatedLr.toFixed(2)} inches
-                    <div className="text-sm text-gray-50 mt-2">
-                      ({(calculatedLr / 12).toFixed(2)} ft)
+                <div className="p-6 bg-[var(--input-bg)] border border-[var(--card-border)] text-center">
+                  <div className="text-2xl text-[var(--text-primary)] font-mono tracking-wider">
+                    Lr = {(calculatedLr / 12).toFixed(2)} ft
+                    <div className="text-sm text-[var(--text-tertiary)] mt-2">
+                      ({calculatedLr.toFixed(2)} inches)
                     </div>
                   </div>
                 </div>
@@ -258,14 +263,14 @@ const ShapeSearch: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <button
                     onClick={() => setShowEquation(!showEquation)}
-                    className="p-3 bg-gray-50 text-gray-700 hover:text-black font-mono tracking-wider"
+                    className="p-3 bg-[var(--input-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono tracking-wider"
                   >
                     {showEquation ? 'HIDE EQUATION' : 'VIEW EQUATION'}
                   </button>
                   
                   <button
                     onClick={() => setShowDetails(!showDetails)}
-                    className="p-3 bg-gray-50 text-gray-700 hover:text-black font-mono tracking-wider"
+                    className="p-3 bg-[var(--input-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono tracking-wider"
                   >
                     {showDetails ? 'HIDE DETAILS' : 'VIEW DETAILS'}
                   </button>
