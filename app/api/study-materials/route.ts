@@ -2,63 +2,85 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+// Define the file interface
+interface FileInfo {
+  name: string;
+  size: number;
+  type: string;
+}
+
+// Define the category interface
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  files: FileInfo[];
+}
+
 export async function GET() {
   try {
-    const studyMaterialsDir = path.join(process.cwd(), 'public', 'study-materials');
-    
-    // Define your three categories
-    const categories = [
+    // Define your three categories with empty files arrays by default
+    const categories: Category[] = [
       {
         id: 'structural',
         name: 'Structural Engineering',
         description: 'Fundamentals of structural analysis, design codes, and practice problems.',
-        files: [] as Array<{name: string; size: number; type: string}>
+        files: []
       },
       {
         id: 'mechanics',
         name: 'Mechanics of Materials',
         description: 'Resources covering stress, strain, deformation, and material properties.',
-        files: [] as Array<{name: string; size: number; type: string}>
+        files: []
       },
       {
         id: 'construction',
         name: 'Construction Methods',
         description: 'Documents on construction techniques, management, and standards.',
-        files: [] as Array<{name: string; size: number; type: string}>
+        files: []
       }
     ];
     
-    // Ensure the base directory exists
-    if (!fs.existsSync(studyMaterialsDir)) {
-      fs.mkdirSync(studyMaterialsDir, { recursive: true });
-    }
+    // In Vercel's serverless environment, we can't reliably create directories
+    // So we'll try to read files if the directories exist, but won't try to create them
+    const studyMaterialsDir = path.join(process.cwd(), 'public', 'study-materials');
     
-    // Read files from each category directory
-    for (const category of categories) {
-      const categoryDir = path.join(studyMaterialsDir, category.id);
-      
-      // Create directory if it doesn't exist
-      if (!fs.existsSync(categoryDir)) {
-        fs.mkdirSync(categoryDir, { recursive: true });
-      }
-      
-      try {
-        // Read files in the directory
-        const files = fs.readdirSync(categoryDir);
+    // Only try to read files if the base directory exists
+    if (fs.existsSync(studyMaterialsDir)) {
+      // Read files from each category directory
+      for (const category of categories) {
+        const categoryDir = path.join(studyMaterialsDir, category.id);
         
-        category.files = files.map(fileName => {
-          const filePath = path.join(categoryDir, fileName);
-          const stats = fs.statSync(filePath);
-          
-          return {
-            name: fileName,
-            size: stats.size,
-            type: path.extname(fileName).substring(1)
-          };
-        });
-      } catch (dirError) {
-        console.error(`Error reading directory ${categoryDir}:`, dirError);
-        // Continue with empty files array
+        // Only try to read files if the category directory exists
+        if (fs.existsSync(categoryDir)) {
+          try {
+            // Read files in the directory
+            const files = fs.readdirSync(categoryDir);
+            
+            category.files = files.map(fileName => {
+              try {
+                const filePath = path.join(categoryDir, fileName);
+                const stats = fs.statSync(filePath);
+                
+                return {
+                  name: fileName,
+                  size: stats.size,
+                  type: path.extname(fileName).substring(1)
+                };
+              } catch (fileError) {
+                console.error(`Error reading file ${fileName}:`, fileError);
+                return {
+                  name: fileName,
+                  size: 0,
+                  type: path.extname(fileName).substring(1)
+                };
+              }
+            });
+          } catch (dirError) {
+            console.error(`Error reading directory ${categoryDir}:`, dirError);
+            // Continue with empty files array
+          }
+        }
       }
     }
     
@@ -66,8 +88,30 @@ export async function GET() {
   } catch (error) {
     console.error('Error reading study materials:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch study materials', categories: [] },
-      { status: 500 }
+      { 
+        error: 'Failed to fetch study materials', 
+        categories: [
+          {
+            id: 'structural',
+            name: 'Structural Engineering',
+            description: 'Fundamentals of structural analysis, design codes, and practice problems.',
+            files: []
+          },
+          {
+            id: 'mechanics',
+            name: 'Mechanics of Materials',
+            description: 'Resources covering stress, strain, deformation, and material properties.',
+            files: []
+          },
+          {
+            id: 'construction',
+            name: 'Construction Methods',
+            description: 'Documents on construction techniques, management, and standards.',
+            files: []
+          }
+        ]
+      },
+      { status: 200 }  // Return 200 even on error, with empty categories
     );
   }
 } 
