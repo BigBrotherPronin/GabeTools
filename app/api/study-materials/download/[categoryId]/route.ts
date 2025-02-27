@@ -6,13 +6,12 @@ import archiver from 'archiver';
 // Simplified route handler with correct types
 export async function GET(
   request: NextRequest,
-  { params }: any
+  { params }: { params: { categoryId: string } }
 ) {
   const categoryId = params.categoryId;
   
-  // Validate category ID
-  const validCategories = ['structural', 'mechanics', 'construction'];
-  if (!validCategories.includes(categoryId)) {
+  // Validate category ID - only allow structural-materials
+  if (categoryId !== 'structural-materials') {
     return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
   }
   
@@ -52,7 +51,7 @@ export async function GET(
     // Create response with appropriate headers
     const response = new NextResponse(buffer);
     response.headers.set('Content-Type', 'application/zip');
-    response.headers.set('Content-Disposition', `attachment; filename=${categoryId}-materials.zip`);
+    response.headers.set('Content-Disposition', `attachment; filename=structural-materials.zip`);
     
     return response;
   } catch (error) {

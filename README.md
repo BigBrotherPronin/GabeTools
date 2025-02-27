@@ -20,6 +20,19 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Study Materials
+
+The application includes a study materials section where users can view and download educational resources. To add or update study materials:
+
+1. Create the following directory in the `public` folder if it doesn't exist:
+   - `public/study-materials/structural-materials/` - For all structural engineering materials
+
+2. Add your files directly to this directory.
+
+3. Restart the application or redeploy for changes to take effect.
+
+The download functionality is protected by a password. The default password is `engineering123`, which can be changed in the `study-materials/page.tsx` file.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
