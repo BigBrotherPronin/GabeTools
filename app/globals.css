@@ -5,100 +5,128 @@
 /* Import a technical monospace font */
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
 
-/* Theme variables */
-.light {
-  --background: #f8f8f8;
-  --foreground: #333;
-  --card-bg: white;
-  --card-border: rgba(0, 0, 0, 0.1);
-  --card-shadow: rgba(0, 0, 0, 0.1);
-  --card-shadow-hover: rgba(0, 0, 0, 0.15);
-  --text-primary: #333;
-  --text-secondary: #666;
-  --text-tertiary: #999;
-  --grid-lines: rgba(0, 0, 0, 0.05);
-  --button-bg: white;
-  --button-text: #333;
-  --button-hover: #f0f0f0;
-  --input-bg: #f5f5f5;
-  --input-border: #ddd;
-  --accent: #3b82f6;
-}
-
-.dark {
+/* Theme variables - Dark Mode Only */
+:root {
   --background: #121212;
-  --foreground: rgba(255, 255, 255, 0.9);
+  --foreground: #e0e0e0;
   --card-bg: #1e1e1e;
   --card-border: rgba(255, 255, 255, 0.1);
   --card-shadow: rgba(0, 0, 0, 0.3);
   --card-shadow-hover: rgba(0, 0, 0, 0.4);
-  --text-primary: rgba(255, 255, 255, 0.9);
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.5);
-  --grid-lines: rgba(255, 255, 255, 0.05);
-  --button-bg: #2a2a2a;
-  --button-text: rgba(255, 255, 255, 0.9);
-  --button-hover: #333;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #707070;
+  --accent: #3a8eff;
+  --accent-hover: #5aa0ff;
   --input-bg: #2a2a2a;
-  --input-border: #444;
-  --accent: #60a5fa;
+  --input-border: #3a3a3a;
+  --input-text: #e0e0e0;
+  --grid-line: rgba(255, 255, 255, 0.05);
+  --terminal-bg: #1a1a1a;
+  --terminal-border: #333333;
+  --terminal-text: #e0e0e0;
+  --terminal-prompt: #3a8eff;
+  --terminal-success: #4caf50;
+  --terminal-error: #f44336;
 }
 
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Source Code Pro', monospace;
+}
+
+/* Engineering grid background */
 .engineering-grid {
+  background-color: var(--background);
   background-image: 
-    linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
+/* Minimal card styling */
 .minimal-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  box-shadow: 0 4px 8px var(--card-shadow);
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px var(--card-shadow);
+  transition: box-shadow 0.3s ease;
 }
 
 .minimal-card:hover {
-  box-shadow: 0 8px 16px var(--card-shadow-hover);
-  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--card-shadow-hover);
 }
 
+/* Minimal button styling */
 .minimal-button {
-  background-color: var(--button-bg);
+  background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  box-shadow: 0 2px 4px var(--card-shadow);
-  color: var(--button-text);
+  color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
 .minimal-button:hover {
-  box-shadow: 0 4px 8px var(--card-shadow-hover);
-  transform: translateY(-1px);
-  background-color: var(--button-hover);
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
-@layer base {
-  body {
-    font-family: 'Source Code Pro', monospace;
-    background: var(--background);
-    color: var(--foreground);
-    letter-spacing: 0.05em;
-  }
+/* Terminal styling */
+.terminal {
+  background-color: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
+  color: var(--terminal-text);
+  font-family: 'Source Code Pro', monospace;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow: auto;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
+.terminal-prompt {
+  color: var(--terminal-prompt);
 }
 
-.glass-effect {
-  background: rgba(18, 18, 18, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+.terminal-success {
+  color: var(--terminal-success);
+}
+
+.terminal-error {
+  color: var(--terminal-error);
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+}
+
+th {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+tr:hover {
+  background-color: var(--input-bg);
+}
+
+/* Engineering paper styling */
+.engineering-paper-grid {
+  background-color: var(--terminal-bg);
+  background-image: 
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 1px solid var(--terminal-border);
 }
 
 .engineering-paper {
-  background-color: rgba(18, 18, 18, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -122,4 +150,17 @@ body {
 .technical-font {
   font-family: 'Source Code Pro', monospace;
   letter-spacing: 0.05em;
+}
+
+/* Success and error message styling */
+.success-message {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #f44336;
 }

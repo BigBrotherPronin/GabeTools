@@ -72,17 +72,21 @@ export default function Home() {
                   </div>
                 </button>
                 
-                {/* Placeholder for future tools */}
-                {/*
-                <div className="minimal-card p-6 opacity-50">
-                  <h3 className="text-xl font-bold text-gray-800 mb-3 tracking-wider">
-                    COMING SOON
+                {/* Study Materials Tool */}
+                <button
+                  onClick={() => router.push('/study-materials')}
+                  className="minimal-card p-6 group"
+                >
+                  <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 tracking-wider">
+                    STUDY MATERIALS
                   </h3>
-                  <p className="text-gray-600 text-sm tracking-wider">
-                    More engineering tools in development
+                  <p className="text-[var(--text-secondary)] text-sm tracking-wider mb-4">
+                    Engineering Resources & References
                   </p>
-                </div>
-                */}
+                  <div className="text-[var(--accent)] text-sm tracking-wider opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    EXPLORE →
+                  </div>
+                </button>
               </div>
             </div>
 
