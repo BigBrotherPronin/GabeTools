@@ -3,17 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
-interface RouteParams {
-  params: {
-    categoryId: string;
-  };
-}
-
 export async function GET(
   request: NextRequest,
-  context: RouteParams
+  { params }: { params: { categoryId: string } }
 ) {
-  const categoryId = context.params.categoryId;
+  const { categoryId } = params;
   
   // Validate category ID - only allow structural-materials
   if (categoryId !== 'structural-materials') {
