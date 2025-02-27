@@ -6,7 +6,7 @@ import archiver from 'archiver';
 // Simplified route handler with correct types
 export async function GET(
   request: NextRequest,
-  { params }: any
+  { params }: { params: { categoryId: string } }
 ) {
   const categoryId = params.categoryId;
   

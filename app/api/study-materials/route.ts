@@ -19,7 +19,7 @@ interface Category {
 
 export async function GET() {
   try {
-    // Define your three categories with empty files arrays by default
+    // Define your three categories
     const categories: Category[] = [
       {
         id: 'structural',
@@ -41,20 +41,16 @@ export async function GET() {
       }
     ];
     
-    // In Vercel's serverless environment, we can't reliably create directories
-    // So we'll try to read files if the directories exist, but won't try to create them
+    // Read files from the public directory
     const studyMaterialsDir = path.join(process.cwd(), 'public', 'study-materials');
     
-    // Only try to read files if the base directory exists
+    // Only try to read if the directory exists
     if (fs.existsSync(studyMaterialsDir)) {
-      // Read files from each category directory
       for (const category of categories) {
         const categoryDir = path.join(studyMaterialsDir, category.id);
         
-        // Only try to read files if the category directory exists
         if (fs.existsSync(categoryDir)) {
           try {
-            // Read files in the directory
             const files = fs.readdirSync(categoryDir);
             
             category.files = files.map(fileName => {
@@ -78,7 +74,6 @@ export async function GET() {
             });
           } catch (dirError) {
             console.error(`Error reading directory ${categoryDir}:`, dirError);
-            // Continue with empty files array
           }
         }
       }
@@ -88,30 +83,8 @@ export async function GET() {
   } catch (error) {
     console.error('Error reading study materials:', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch study materials', 
-        categories: [
-          {
-            id: 'structural',
-            name: 'Structural Engineering',
-            description: 'Fundamentals of structural analysis, design codes, and practice problems.',
-            files: []
-          },
-          {
-            id: 'mechanics',
-            name: 'Mechanics of Materials',
-            description: 'Resources covering stress, strain, deformation, and material properties.',
-            files: []
-          },
-          {
-            id: 'construction',
-            name: 'Construction Methods',
-            description: 'Documents on construction techniques, management, and standards.',
-            files: []
-          }
-        ]
-      },
-      { status: 200 }  // Return 200 even on error, with empty categories
+      { error: 'Failed to fetch study materials' },
+      { status: 500 }
     );
   }
 } 
