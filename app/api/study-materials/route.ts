@@ -28,6 +28,11 @@ export async function GET() {
       }
     ];
     
+    // Ensure the base directory exists
+    if (!fs.existsSync(studyMaterialsDir)) {
+      fs.mkdirSync(studyMaterialsDir, { recursive: true });
+    }
+    
     // Read files from each category directory
     for (const category of categories) {
       const categoryDir = path.join(studyMaterialsDir, category.id);
@@ -37,26 +42,31 @@ export async function GET() {
         fs.mkdirSync(categoryDir, { recursive: true });
       }
       
-      // Read files in the directory
-      const files = fs.readdirSync(categoryDir);
-      
-      category.files = files.map(fileName => {
-        const filePath = path.join(categoryDir, fileName);
-        const stats = fs.statSync(filePath);
+      try {
+        // Read files in the directory
+        const files = fs.readdirSync(categoryDir);
         
-        return {
-          name: fileName,
-          size: stats.size,
-          type: path.extname(fileName).substring(1)
-        };
-      });
+        category.files = files.map(fileName => {
+          const filePath = path.join(categoryDir, fileName);
+          const stats = fs.statSync(filePath);
+          
+          return {
+            name: fileName,
+            size: stats.size,
+            type: path.extname(fileName).substring(1)
+          };
+        });
+      } catch (dirError) {
+        console.error(`Error reading directory ${categoryDir}:`, dirError);
+        // Continue with empty files array
+      }
     }
     
     return NextResponse.json({ categories });
   } catch (error) {
     console.error('Error reading study materials:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch study materials' },
+      { error: 'Failed to fetch study materials', categories: [] },
       { status: 500 }
     );
   }
