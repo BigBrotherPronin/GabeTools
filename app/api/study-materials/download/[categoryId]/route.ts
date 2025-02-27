@@ -3,11 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { categoryId: string } }
-) {
-  const { categoryId } = params;
+type Props = {
+  params: {
+    categoryId: string;
+  };
+};
+
+export async function GET(request: NextRequest, props: Props) {
+  const { categoryId } = props.params;
   
   // Validate category ID - only allow structural-materials
   if (categoryId !== 'structural-materials') {
