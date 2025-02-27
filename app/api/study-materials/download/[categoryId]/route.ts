@@ -3,12 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
-// Simplified route handler with correct types
+interface RouteParams {
+  params: {
+    categoryId: string;
+  };
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { categoryId: string } }
+  context: RouteParams
 ) {
-  const categoryId = params.categoryId;
+  const categoryId = context.params.categoryId;
   
   // Validate category ID - only allow structural-materials
   if (categoryId !== 'structural-materials') {
@@ -36,24 +41,31 @@ export async function GET(
     // Add files to the archive
     for (const file of files) {
       const filePath = path.join(categoryDir, file);
-      archive.file(filePath, { name: file });
+      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        archive.file(filePath, { name: file });
+      }
     }
     
-    archive.finalize();
-    
-    // Convert archive to buffer
+    // Collect chunks in memory
     const chunks: Buffer[] = [];
-    for await (const chunk of archive) {
-      chunks.push(Buffer.from(chunk));
-    }
-    const buffer = Buffer.concat(chunks);
+    archive.on('data', (chunk) => chunks.push(chunk));
     
-    // Create response with appropriate headers
-    const response = new NextResponse(buffer);
-    response.headers.set('Content-Type', 'application/zip');
-    response.headers.set('Content-Disposition', `attachment; filename=structural-materials.zip`);
-    
-    return response;
+    // Return a promise that resolves when the archive is finalized
+    return new Promise<NextResponse>((resolve, reject) => {
+      archive.on('error', (err) => {
+        reject(err);
+      });
+      
+      archive.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const response = new NextResponse(buffer);
+        response.headers.set('Content-Type', 'application/zip');
+        response.headers.set('Content-Disposition', `attachment; filename=structural-materials.zip`);
+        resolve(response);
+      });
+      
+      archive.finalize();
+    });
   } catch (error) {
     console.error('Error creating zip archive:', error);
     return NextResponse.json({ error: 'Failed to create zip archive' }, { status: 500 });
