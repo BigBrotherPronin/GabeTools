@@ -4,8 +4,11 @@ import path from 'path';
 import archiver from 'archiver';
 
 // Simplified route handler with correct types
-export async function GET(request: NextRequest, context: { params: { categoryId: string } }) {
-  const { categoryId } = context.params;
+export async function GET(
+  request: NextRequest,
+  { params }: any
+) {
+  const categoryId = params.categoryId;
   
   // Validate category ID
   const validCategories = ['structural', 'mechanics', 'construction'];
