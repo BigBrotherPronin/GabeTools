@@ -31,7 +31,7 @@ The application includes a study materials section where users can view and down
 
 3. Restart the application or redeploy for changes to take effect.
 
-The download functionality is protected by a password. The default password is `engineering123`, which can be changed in the `study-materials/page.tsx` file.
+Each file can be downloaded individually. The download functionality is protected by a password. The default password is `engineering123`, which can be changed in the `study-materials/page.tsx` file.
 
 ## Learn More
 

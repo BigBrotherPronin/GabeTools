@@ -26,7 +26,7 @@ export default function StudyMaterialsPage() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{categoryId: string, fileName: string} | null>(null);
   
   // Fetch categories and files on page load
   useEffect(() => {
@@ -82,8 +82,8 @@ export default function StudyMaterialsPage() {
     }
   };
 
-  const handleDownload = (categoryId: string) => {
-    setSelectedCategoryId(categoryId);
+  const handleDownload = (categoryId: string, fileName: string) => {
+    setSelectedFile({categoryId, fileName});
     setShowPasswordModal(true);
   };
 
@@ -97,8 +97,8 @@ export default function StudyMaterialsPage() {
       setPasswordError('');
       
       // Trigger download
-      if (selectedCategoryId) {
-        window.location.href = `/api/study-materials/download/${selectedCategoryId}`;
+      if (selectedFile) {
+        window.location.href = `/api/study-materials/download/${selectedFile.categoryId}?file=${encodeURIComponent(selectedFile.fileName)}`;
       }
     } else {
       setPasswordError('Incorrect password');
@@ -150,28 +150,24 @@ export default function StudyMaterialsPage() {
                     ) : (
                       <ul className="divide-y divide-[var(--card-border)]">
                         {category.files.map((file) => (
-                          <li key={file.name} className="py-3 flex items-center">
-                            <span className="mr-2">{getFileIcon(file.type)}</span>
-                            <span className="flex-grow text-[var(--text-primary)]">{file.name}</span>
-                            <span className="text-sm text-[var(--text-tertiary)]">{formatFileSize(file.size)}</span>
+                          <li key={file.name} className="py-3 flex items-center justify-between">
+                            <div className="flex items-center">
+                              <span className="mr-2">{getFileIcon(file.type)}</span>
+                              <span className="flex-grow text-[var(--text-primary)]">{file.name}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="text-sm text-[var(--text-tertiary)] mr-4">{formatFileSize(file.size)}</span>
+                              <button
+                                onClick={() => handleDownload(category.id, file.name)}
+                                className="px-3 py-1 bg-[var(--accent)] text-white rounded text-sm"
+                              >
+                                Download
+                              </button>
+                            </div>
                           </li>
                         ))}
                       </ul>
                     )}
-                  </div>
-                  
-                  <div className="bg-[var(--card-background-secondary)] p-4 flex justify-end">
-                    <button
-                      onClick={() => handleDownload(category.id)}
-                      disabled={category.files.length === 0}
-                      className={`px-4 py-2 rounded ${
-                        category.files.length === 0
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-[var(--accent)] text-white'
-                      }`}
-                    >
-                      DOWNLOAD ZIP
-                    </button>
                   </div>
                 </div>
               ))}
