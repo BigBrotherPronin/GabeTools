@@ -3,19 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { categoryId: string } }
-) {
-  const { categoryId } = params;
+// Simplified route handler with correct types
+export async function GET(request: NextRequest, context: { params: { categoryId: string } }) {
+  const { categoryId } = context.params;
   
   // Validate category ID
   const validCategories = ['structural', 'mechanics', 'construction'];
   if (!validCategories.includes(categoryId)) {
-    return NextResponse.json(
-      { error: 'Invalid category' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
   }
   
   try {
@@ -23,26 +18,18 @@ export async function GET(
     
     // Check if directory exists
     if (!fs.existsSync(categoryDir)) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
     }
     
     // Read files in the directory
     const files = fs.readdirSync(categoryDir);
     
     if (files.length === 0) {
-      return NextResponse.json(
-        { error: 'No files in this category' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'No files in this category' }, { status: 404 });
     }
     
     // Create a zip archive
-    const archive = archiver('zip', {
-      zlib: { level: 9 } // Maximum compression
-    });
+    const archive = archiver('zip', { zlib: { level: 9 } });
     
     // Add files to the archive
     for (const file of files) {
@@ -50,7 +37,6 @@ export async function GET(
       archive.file(filePath, { name: file });
     }
     
-    // Finalize the archive
     archive.finalize();
     
     // Convert archive to buffer
@@ -68,9 +54,6 @@ export async function GET(
     return response;
   } catch (error) {
     console.error('Error creating zip archive:', error);
-    return NextResponse.json(
-      { error: 'Failed to create zip archive' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create zip archive' }, { status: 500 });
   }
 } 
