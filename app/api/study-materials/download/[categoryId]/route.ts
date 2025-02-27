@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
-import { Readable } from 'stream';
 
 export async function GET(
   request: NextRequest,
