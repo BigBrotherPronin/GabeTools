@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '../../components/ThemeProvider';
-import AdminLoginModal from '../../components/AdminLoginModal';
 
 interface File {
   name: string;
@@ -22,10 +21,12 @@ export default function StudyMaterialsPage() {
   const router = useRouter();
   const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   
   // Fetch categories and files on page load
   useEffect(() => {
@@ -80,26 +81,41 @@ export default function StudyMaterialsPage() {
       default: return '📁';
     }
   };
+
+  const handleDownload = (categoryId: string) => {
+    setSelectedCategoryId(categoryId);
+    setShowPasswordModal(true);
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Simple hardcoded password - replace with your desired password
+    if (password === 'engineering123') {
+      setShowPasswordModal(false);
+      setPassword('');
+      setPasswordError('');
+      
+      // Trigger download
+      if (selectedCategoryId) {
+        window.location.href = `/api/study-materials/download/${selectedCategoryId}`;
+      }
+    } else {
+      setPasswordError('Incorrect password');
+    }
+  };
   
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-[var(--text-primary)]">Study Materials</h1>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => router.push('/')}
-              className="px-4 py-2 border border-[var(--card-border)] text-[var(--text-secondary)] rounded"
-            >
-              Back to Home
-            </button>
-            <button
-              onClick={() => setShowAdminLogin(true)}
-              className="px-4 py-2 bg-[var(--accent)] text-white rounded"
-            >
-              Admin
-            </button>
-          </div>
+          <button
+            onClick={() => router.push('/')}
+            className="px-4 py-2 border border-[var(--card-border)] text-[var(--text-secondary)] rounded"
+          >
+            Back to Home
+          </button>
         </div>
         
         <div className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg p-6 shadow-sm">
@@ -146,7 +162,7 @@ export default function StudyMaterialsPage() {
                   
                   <div className="bg-[var(--card-background-secondary)] p-4 flex justify-end">
                     <button
-                      onClick={() => window.location.href = `/api/study-materials/download/${category.id}`}
+                      onClick={() => handleDownload(category.id)}
                       disabled={category.files.length === 0}
                       className={`px-4 py-2 rounded ${
                         category.files.length === 0
@@ -163,27 +179,46 @@ export default function StudyMaterialsPage() {
           )}
         </div>
         
-        {showAdminLogin && (
-          <AdminLoginModal 
-            onClose={() => setShowAdminLogin(false)}
-            onLogin={() => setIsAdmin(true)}
-          />
-        )}
-        
-        {isAdmin && (
-          <div className="mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg">
-            <h2 className="text-xl font-bold mb-4 text-[var(--text-primary)]">Admin Information</h2>
-            <p className="text-[var(--text-secondary)] mb-4">
-              To add or update study materials, you need to manually add files to the following directories in the codebase:
-            </p>
-            <ul className="list-disc pl-5 mb-4 text-[var(--text-secondary)]">
-              <li><code>/public/study-materials/structural/</code> - For structural engineering materials</li>
-              <li><code>/public/study-materials/mechanics/</code> - For mechanics of materials</li>
-              <li><code>/public/study-materials/construction/</code> - For construction methods</li>
-            </ul>
-            <p className="text-[var(--text-secondary)]">
-              After adding files, redeploy the application for changes to take effect.
-            </p>
+        {/* Password Modal */}
+        {showPasswordModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-[var(--card-background)] p-6 rounded-lg shadow-lg w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4 text-[var(--text-primary)]">Enter Password</h2>
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="mb-4">
+                  <label className="block text-[var(--text-secondary)] mb-2">Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-2 border border-[var(--card-border)] rounded bg-[var(--input-background)] text-[var(--text-primary)]"
+                    placeholder="Enter password to download"
+                  />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                  )}
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordModal(false);
+                      setPassword('');
+                      setPasswordError('');
+                    }}
+                    className="px-4 py-2 border border-[var(--card-border)] text-[var(--text-secondary)] rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[var(--accent)] text-white rounded"
+                  >
+                    Download
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </div>

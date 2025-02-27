@@ -19,24 +19,12 @@ interface Category {
 
 export async function GET() {
   try {
-    // Define your three categories
+    // Define just one category
     const categories: Category[] = [
       {
-        id: 'structural',
-        name: 'Structural Engineering',
-        description: 'Fundamentals of structural analysis, design codes, and practice problems.',
-        files: []
-      },
-      {
-        id: 'mechanics',
-        name: 'Mechanics of Materials',
-        description: 'Resources covering stress, strain, deformation, and material properties.',
-        files: []
-      },
-      {
-        id: 'construction',
-        name: 'Construction Methods',
-        description: 'Documents on construction techniques, management, and standards.',
+        id: 'structural-materials',
+        name: 'Structural Materials',
+        description: 'Resources for structural engineering including analysis, design codes, and practice problems.',
         files: []
       }
     ];
@@ -46,35 +34,33 @@ export async function GET() {
     
     // Only try to read if the directory exists
     if (fs.existsSync(studyMaterialsDir)) {
-      for (const category of categories) {
-        const categoryDir = path.join(studyMaterialsDir, category.id);
-        
-        if (fs.existsSync(categoryDir)) {
-          try {
-            const files = fs.readdirSync(categoryDir);
-            
-            category.files = files.map(fileName => {
-              try {
-                const filePath = path.join(categoryDir, fileName);
-                const stats = fs.statSync(filePath);
-                
-                return {
-                  name: fileName,
-                  size: stats.size,
-                  type: path.extname(fileName).substring(1)
-                };
-              } catch (fileError) {
-                console.error(`Error reading file ${fileName}:`, fileError);
-                return {
-                  name: fileName,
-                  size: 0,
-                  type: path.extname(fileName).substring(1)
-                };
-              }
-            });
-          } catch (dirError) {
-            console.error(`Error reading directory ${categoryDir}:`, dirError);
-          }
+      const categoryDir = path.join(studyMaterialsDir, 'structural-materials');
+      
+      if (fs.existsSync(categoryDir)) {
+        try {
+          const files = fs.readdirSync(categoryDir);
+          
+          categories[0].files = files.map(fileName => {
+            try {
+              const filePath = path.join(categoryDir, fileName);
+              const stats = fs.statSync(filePath);
+              
+              return {
+                name: fileName,
+                size: stats.size,
+                type: path.extname(fileName).substring(1)
+              };
+            } catch (fileError) {
+              console.error(`Error reading file ${fileName}:`, fileError);
+              return {
+                name: fileName,
+                size: 0,
+                type: path.extname(fileName).substring(1)
+              };
+            }
+          });
+        } catch (dirError) {
+          console.error(`Error reading directory ${categoryDir}:`, dirError);
         }
       }
     }
